@@ -1,6 +1,6 @@
-# This is an end-to-end, enterprise-grade deployment guide. 
+# Tomcat Installation and Improvements V-0.0.1
 
-## It takes you from a blank server to a running Java web application, applying best practices for security and reliability.
+This is an end-to-end, enterprise-grade deployment guide.It takes you from a blank server to a running Java web application, applying best practices for security and reliability.
 
 Here is your "Pro" playbook for deploying Petclinic to Tomcat on a fresh Linux server.
 
