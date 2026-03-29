@@ -143,4 +143,6 @@ Open your web browser and navigate to:
 
 > **Pro Tip for the Cloud:** If the site doesn't load, the number one culprit is the Cloud Firewall. Make sure your AWS Security Group (or equivalent) has an Inbound Rule allowing traffic on **Custom TCP Port 8080** from anywhere (`0.0.0.0/0`).
 
-This blueprint gives you a clean, secure, and easily maintainable server. Would you like me to show you the next step in enterprise architecture, which is setting up an Nginx reverse proxy so users can access your site on standard port `80` without typing `:8080` in the URL?
+This blueprint gives you a clean, secure, and easily maintainable server. 
+
+The next step in enterprise architecture, which is setting up an Nginx reverse proxy so users can access your site on standard port `80` without typing `:8080` in the URL.
