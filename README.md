@@ -1,3 +1,109 @@
+Launching servers in the cloud is a core skill for any system administrator or DevOps engineer. The terminology differs slightly between providers, but the underlying concepts (Compute, Networking, Security, Storage) are identical.
+
+Here is your step-by-step guide to provisioning both Linux in AWS and Windows in Azure.
+
+-----
+
+### Part 1: Launching Ubuntu or RHEL in AWS (EC2)
+
+In AWS, virtual servers are called **EC2 Instances** (Elastic Compute Cloud).
+
+**Step 1: Access the EC2 Dashboard**
+
+1.  Log in to the [AWS Management Console](https://console.aws.amazon.com/).
+2.  In the top search bar, type **EC2** and select it.
+3.  In the top right corner, verify your **Region** (e.g., us-east-1, ap-south-1). Choose the region closest to you or your users.
+4.  Click the orange **Launch instance** button.
+
+**Step 2: Name and OS Selection (AMI)**
+
+1.  **Name:** Give your server a recognizable name (e.g., `Petclinic-Prod-Ubuntu`).
+2.  **Application and OS Images (Amazon Machine Image):** \* Click on the **Ubuntu** or **Red Hat** tab.
+      * Select the default architecture (usually 64-bit x86). If you are practicing, look for the badge that says **"Free tier eligible"** (like Ubuntu 22.04 LTS or RHEL 9).
+
+**Step 3: Choose Instance Type**
+
+1.  **Instance type:** This dictates your CPU and RAM. Select `t2.micro` or `t3.micro` (which are usually Free Tier eligible).
+
+**Step 4: Create a Key Pair (Crucial)**
+*You cannot connect to your Linux server without this.*
+
+1.  Click **Create new key pair**.
+2.  Name it (e.g., `my-aws-key`).
+3.  Select **RSA** and **.pem** format (used for standard SSH terminals like Mac/Linux/Windows Terminal).
+4.  Click **Create key pair**. *The file will immediately download to your computer. Keep it safe; AWS will not let you download it again.*
+
+**Step 5: Configure Network Security**
+This acts as your server's firewall (called a Security Group in AWS).
+
+1.  Under **Network settings**, ensure **Create security group** is selected.
+2.  Check the following boxes based on what you need:
+      * **Allow SSH traffic from:** Set to **Anywhere** (0.0.0.0/0) or **My IP** (more secure). This allows you to use the terminal.
+      * **Allow HTTP/HTTPS traffic from the internet:** Check these if you plan to run Nginx, Tomcat, or web apps on this server.
+
+**Step 6: Launch**
+
+1.  Leave storage at the default (usually 8GB or 10GB General Purpose SSD).
+2.  Click the orange **Launch instance** button on the bottom right.
+3.  Once successful, click the **Instance ID** link. Wait for the "Instance state" to say **Running**.
+
+**How to Connect:**
+Open your terminal on your personal computer, locate the `.pem` key you downloaded, and run:
+
+```bash
+# Secure the key file permissions first (Mac/Linux only)
+chmod 400 my-aws-key.pem
+
+# SSH into the server (Use 'ubuntu' for Ubuntu, or 'ec2-user' for RHEL)
+ssh -i my-aws-key.pem ubuntu@YOUR_AWS_PUBLIC_IP
+```
+
+-----
+
+### Part 2: Launching a Windows Server in Microsoft Azure
+
+In Azure, virtual servers are simply called **Virtual Machines (VMs)**.
+
+**Step 1: Access Virtual Machines**
+
+1.  Log in to the [Azure Portal](https://www.google.com/search?q=https://portal.azure.com/).
+2.  In the search bar at the top, type **Virtual Machines** and select it.
+3.  Click **+ Create** -\> **Azure virtual machine**.
+
+**Step 2: Project & Instance Details**
+
+1.  **Resource Group:** This is a logical folder for your server. Click **Create new** and name it (e.g., `Windows-Servers-RG`).
+2.  **Virtual machine name:** (e.g., `WinServer2022`).
+3.  **Region:** Select a region close to you.
+4.  **Image:** Open the dropdown and select **Windows Server 2022 Datacenter**.
+5.  **Size:** Choose your CPU/RAM. Windows requires more power than Linux. Look for a `B2s` or `D2s_v3` size (at least 2 vCPUs and 4GB+ RAM) to ensure it doesn't freeze during setup.
+
+**Step 3: Administrator Account (Crucial)**
+Unlike Linux (which uses SSH keys by default), Windows primarily uses a username and password for remote desktop access.
+
+1.  **Username:** Create a secure admin username (e.g., `sysadmin`). *Do not use "admin" or "administrator" as these are easily guessed by hackers.*
+2.  **Password:** Create a complex password and write it down.
+
+**Step 4: Inbound Port Rules (Security)**
+
+1.  **Public inbound ports:** Select **Allow selected ports**.
+2.  **Select inbound ports:** Check the box for **RDP (3389)**.
+      * *Note: RDP (Remote Desktop Protocol) is what allows you to see the Windows desktop remotely. For production, you would restrict this to only your home/office IP address, but allowing it globally is fine for a quick test.*
+
+**Step 5: Review and Create**
+
+1.  Click the blue **Review + create** button at the very bottom.
+2.  Azure will run a quick validation check. Once it passes, click **Create**.
+3.  It will take a few minutes to deploy. Once done, click **Go to resource**.
+
+**How to Connect:**
+
+1.  On your VM's overview page in Azure, click the **Connect** button at the top, then select **RDP**.
+2.  Download the RDP File provided.
+3.  Open the downloaded file.
+      * *If you are on a Mac, you will need to download the "Microsoft Remote Desktop" app from the Mac App Store first.*
+4.  When prompted, enter the Username and Password you created in Step 3. Accept any certificate warnings, and you will see your Windows Server desktop load\!
+
 # Tomcat Installation and Improvements V-0.0.1
 
 This is an end-to-end, enterprise-grade deployment guide.It takes you from a blank server to a running Java web application, applying best practices for security and reliability.
