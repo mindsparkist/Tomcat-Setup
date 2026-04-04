@@ -104,6 +104,8 @@ Unlike Linux (which uses SSH keys by default), Windows primarily uses a username
       * *If you are on a Mac, you will need to download the "Microsoft Remote Desktop" app from the Mac App Store first.*
 4.  When prompted, enter the Username and Password you created in Step 3. Accept any certificate warnings, and you will see your Windows Server desktop load\!
 
+
+
 # Tomcat Installation and Improvements V-0.0.1
 
 This is an end-to-end, enterprise-grade deployment guide.It takes you from a blank server to a running Java web application, applying best practices for security and reliability.
