@@ -106,46 +106,38 @@ Unlike Linux (which uses SSH keys by default), Windows primarily uses a username
 
 
 
-# Tomcat Installation and Improvements V-0.0.1
+# Tomcat Installation and Improvements V-0.0.2
 
-This is an end-to-end, enterprise-grade deployment guide.It takes you from a blank server to a running Java web application, applying best practices for security and reliability.
-
-Here is your "Pro" playbook for deploying Petclinic to Tomcat on a fresh Linux server.
-
----
-
-### Phase 1: Connect & Prepare the Server
+#### Phase 1: Connect & Prepare the Server
 
 **1. SSH into the Server**
-Open your terminal and connect using your private key. 
-* *Ubuntu default user:* `ubuntu`
-* *RHEL/Amazon Linux default user:* `ec2-user`
+Open your terminal and connect using your private key.
+*   **Ubuntu default user:** `ubuntu`
+*   **RHEL/Amazon Linux default user:** `ec2-user`
 ```bash
 ssh -i /path/to/your-key.pem ubuntu@YOUR_SERVER_IP
 ```
 
 **2. Update the System and Install Prerequisites**
 A pro always starts by updating the package manager and installing Git, Java, and Maven.
-
-* **For Ubuntu/Debian:**
-  ```bash
-  sudo apt update -y
-  sudo apt install -y default-jdk maven git wget tar
-  ```
-* **For RHEL/CentOS/Amazon Linux:**
-  ```bash
-  sudo dnf update -y
-  sudo dnf install -y java-11-openjdk-devel maven git wget tar
-  ```
-
----
-
-### Phase 2: Secure Infrastructure Setup
-
-**1. Create the Service Account**
-Never run web servers as root. We create a dedicated `tomcat` user with no login privileges (`/bin/false`) to contain any potential security breaches.
+*   **For Ubuntu/Debian:**
 ```bash
-sudo useradd -m -U -d /opt/tomcat -s /bin/false tomcat
+sudo apt update -y
+sudo apt install -y default-jdk maven git wget tar
+```
+*   **For RHEL/CentOS/Amazon Linux:**
+```bash
+sudo dnf update -y
+sudo dnf install -y java-11-openjdk-devel maven git wget tar
+```
+
+#### Phase 2: Secure Infrastructure Setup
+
+**1. Create the Service Account (Fixed)**
+Never run web servers as root. We create a dedicated `tomcat` user with no login privileges (`/bin/false`) to contain any potential security breaches. 
+*(Note: We use `-M` instead of `-m` to ensure Linux does NOT create a physical home directory yet, keeping the path clear for our symlink later).*
+```bash
+sudo useradd -r -M -U -d /opt/tomcat -s /bin/false tomcat
 ```
 
 **2. Download and Extract Tomcat**
@@ -157,24 +149,20 @@ sudo tar -xf apache-tomcat-9.0.65.tar.gz -C /opt/
 ```
 
 **3. Create the Generic Symlink**
-This makes future upgrades seamless. If you ever upgrade Tomcat, you just change where this link points, and you don't have to rewrite any of your system scripts.
+This makes future upgrades seamless. Because we didn't physically create an `/opt/tomcat` folder in Step 1, this link will be created perfectly. If you ever upgrade Tomcat, you just change where this link points.
 ```bash
 sudo ln -s /opt/apache-tomcat-9.0.65 /opt/tomcat
 ```
 
-**4. Lock Down Permissions**
-Give the `tomcat` user ownership of the files and make the startup scripts executable.
+**4. Lock Down Permissions (Fixed)**
+Give the `tomcat` user ownership of the actual files, update the symlink's ownership, and ensure only the necessary startup scripts are executable.
 ```bash
 sudo chown -R tomcat:tomcat /opt/apache-tomcat-9.0.65
-sudo chown -R tomcat:tomcat /opt/tomcat
-sudo chmod -R u+x /opt/tomcat/bin
+sudo chown -h tomcat:tomcat /opt/tomcat
+sudo chmod +x /opt/tomcat/bin/*.sh
 ```
 
----
-
-### Phase 3: Systemd Daemon Configuration
-
-We want Linux to manage Tomcat so it starts automatically if the server reboots and restarts if it crashes.
+***
 
 **1. Create the Service File**
 ```bash
