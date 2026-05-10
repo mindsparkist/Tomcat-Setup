@@ -194,6 +194,36 @@ WantedBy=multi-user.target
 ```
 *Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X` in nano).*
 
+**2. Paste the Configuration**
+*(Note: If you are on RHEL, change `default-java` to the actual Java path, usually `/usr/lib/jvm/jre`)*
+```ini
+[Unit]
+    Description=Apache Tomcat Web Application Container
+    After=network.target
+
+    [Service]
+    Type=forking
+
+    User=tomcat
+    Group=tomcat
+
+    Environment="JAVA_HOME=/usr/lib/jvm/default-java"
+    Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom"
+
+    Environment="CATALINA_BASE=/opt/tomcat"
+    Environment="CATALINA_HOME=/opt/tomcat"
+    Environment="CATALINA_PID=/opt/tomcat/temp/tomcat.pid"
+    Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+    ExecStart=/opt/tomcat/bin/startup.sh
+    ExecStop=/opt/tomcat/bin/shutdown.sh
+
+    [Install]
+    WantedBy=multi-user.target
+```
+*Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X` in nano).*
+
+
 **3. Enable and Start the Service**
 Tell the system to read the new file, enable it on boot, and start it now.
 ```bash
